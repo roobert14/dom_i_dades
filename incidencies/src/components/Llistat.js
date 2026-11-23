@@ -1,32 +1,64 @@
-export function Llistat(llista) {
-  if (!llista || llista.length === 0) {
-    return `<div class="table-responsive">
-      <p style="padding: 20px;">No hi ha cap incidència registrada.</p>
-    </div>`;
+export function Llistat(llistaFiltrada, estatActual = "tots", totalIncidencies = 0) {
+  const selectorFiltre = `
+    <div style="padding: 15px 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #eee;">
+      <label for="filtre-estat"><strong>Filtrar per estat:</strong></label>
+      <select id="filtre-estat" data-action="filtrar-estat">
+        <option value="tots" ${estatActual === "tots" ? "selected" : ""}>Tots els estats</option>
+        <option value="obert" ${estatActual === "obert" ? "selected" : ""}>Obert</option>
+        <option value="en procés" ${estatActual === "en procés" ? "selected" : ""}>En procés</option>
+        <option value="tancat" ${estatActual === "tancat" ? "selected" : ""}>Tancat</option>
+      </select>
+    </div>
+  `;
+
+
+  // Caso 1: No hay ninguna incidencia en el servicio (lista global vacía)
+  if (totalIncidencies === 0) {
+    return `
+      <div class="table-responsive">
+        ${selectorFiltre}
+        <p style="padding: 20px;">No hi ha cap incidència registrada.</p>
+      </div>
+    `;
   }
 
-  let files = "";
 
-  for (let i = 0; i < llista.length; i++) {
+  // Caso 2: Hay incidencias en el sistema, pero ninguna coincide con el filtro activo
+  if (!llistaFiltrada || llistaFiltrada.length === 0) {
+    return `
+      <div class="table-responsive">
+        ${selectorFiltre}
+        <p style="padding: 20px;">No s'han trobat incidències amb l'estat "${estatActual}".</p>
+      </div>
+    `;
+  }
+
+
+  let files = "";
+  for (let i = 0; i < llistaFiltrada.length; i++) {
+    const inc = llistaFiltrada[i];
     files += `
       <tr>
-        <td>${llista[i].id}</td>
-        <td>${llista[i].titol}</td>
-        <td>${llista[i].descripcio}</td>
-        <td>${llista[i].estat}</td>
-        <td>${llista[i].prioritat}</td>
-        <td>${llista[i].assignat}</td>
-        <td>${llista[i].dataCreacio}</td>
+        <td>${inc.id}</td>
+        <td>${inc.titol}</td>
+        <td>${inc.descripcio}</td>
+        <td>${inc.estat}</td>
+        <td>${inc.prioritat}</td>
+        <td>${inc.assignat}</td>
+        <td>${inc.dataCreacio}</td>
         <td>
-          <a href="#/incidencies/${llista[i].id}">Veure</a> |
-          <a href="#/incidencies/${llista[i].id}/editar">Editar</a>
+          <a href="#/incidencies/${inc.id}">Veure</a> | 
+          <a href="#/incidencies/${inc.id}/editar">Editar</a> | 
+          <button type="button" data-action="eliminar" data-id="${inc.id}" class="btn-cancel" style="padding: 4px 8px; cursor: pointer;">Eliminar</button>
         </td>
       </tr>
     `;
   }
 
+
   return `
     <div class="table-responsive">
+      ${selectorFiltre}
       <table class="incidents-table">
         <thead>
           <tr>
