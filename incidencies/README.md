@@ -57,3 +57,18 @@ Quan es modifica una incidència, es mantenen el seu identificador i la data de 
 - Cancel·lació: L'usuari pot sortir del formulari sense desar els canvis i tornar a la pantalla corresponent.
 
 ------
+
+Exercici 4 (E04) — Eliminació i filtratge d'incidències per estat (v0.4.0)
+En aquest quart exercici s'han afegit dues noves funcions al gestor d'incidències: poder eliminar incidències amb una confirmació prèvia i poder filtrar-les segons el seu estat.
+
+- Eliminació d'incidències (src/services/incidenciesService.js): S'ha incorporat la funció eliminarIncidencia(id), que permet esborrar una incidència utilitzant el seu identificador únic. D'aquesta manera, s'evita confondre les incidències encara que canviï la seva posició dins del llistat.
+
+- Gestió dels esdeveniments (src/main.js): S'han afegit dos controladors d'esdeveniments al contenidor principal de l'aplicació. Un gestiona l'eliminació i demana confirmació abans d'esborrar una incidència. L'altre controla els canvis del selector de filtres. Això evita que els esdeveniments es registrin diverses vegades quan es canvia de pantalla.
+
+- Filtratge per estat (src/components/llistat.js): S'ha incorporat un selector que permet mostrar totes les incidències o filtrar-les segons si estan obertes, en procés o tancades.
+
+- Missatges segons els resultats: S'han diferenciat dos casos: quan encara no hi ha cap incidència registrada i quan el filtre seleccionat no troba cap incidència que coincideixi amb l'estat escollit.
+
+En resum: ara l'aplicació permet eliminar incidències de manera segura i consultar-les més fàcilment mitjançant filtres segons el seu estat.
+
+

@@ -16,6 +16,8 @@ import { getRutaActual } from "./router.js";
 
 const app = document.querySelector("#app");
 
+let filtreEstat = "tots";
+
 function validarDades(dades) {
   const errors = {};
   const estatsValids = ["obert", "en procés", "tancat"];
@@ -67,7 +69,13 @@ function render() {
   const ruta = getRutaActual();
 
   if (ruta.vista === "llistat") {
-    pintarLayout(Llistat(getIncidencies()));
+    const totes = getIncidencies();
+
+    const filtrades = filtreEstat === "tots"
+      ? totes
+      : totes.filter((inc) => inc.estat === filtreEstat);
+
+    pintarLayout(Llistat(filtrades, filtreEstat, totes.length));
 
   } else if (ruta.vista === "nova") {
     pintarLayout(Formulari());
@@ -112,6 +120,14 @@ app.addEventListener("click", (e) => {
     eliminarIncidencia(id);
     render();
   }
+});
+
+// FILTRAR INCIDÈNCIES
+app.addEventListener("change", (e) => {
+  if (e.target.dataset.action !== "filtrar-estat") return;
+
+  filtreEstat = e.target.value;
+  render();
 });
 
 // CREAR I EDITAR INCIDÈNCIES
