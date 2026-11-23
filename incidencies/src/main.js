@@ -1,6 +1,13 @@
 
 import "./style.css";
-import { getIncidencies, getIncidenciaById, crearIncidencia } from "./services/incidenciesService.js";
+
+import {
+  getIncidencies,
+  getIncidenciaById,
+  crearIncidencia,
+  actualitzarIncidencia
+} from "./services/incidenciesService.js";
+
 import { Llistat } from "./components/llistat.js";
 import { Detall } from "./components/detall.js";
 import { Formulari } from "./components/formulari.js";
@@ -16,15 +23,19 @@ function validarDades(dades) {
   if (!dades.titol || dades.titol.trim().length < 3) {
     errors.titol = "El títol és obligatori (mínim 3 caràcters).";
   }
+
   if (!dades.descripcio || dades.descripcio.trim().length < 5) {
     errors.descripcio = "La descripció és obligatòria (mínim 5 caràcters).";
   }
+
   if (!dades.assignat || dades.assignat.trim().length < 2) {
     errors.assignat = "Cal indicar la persona assignada.";
   }
+
   if (!estatsValids.includes(dades.estat)) {
     errors.estat = "Selecciona un estat vàlid.";
   }
+
   if (!prioritatsValides.includes(dades.prioritat)) {
     errors.prioritat = "Selecciona una prioritat vàlida.";
   }
@@ -37,11 +48,13 @@ function pintarLayout(contingutVista) {
     <div class="container">
       <header class="main-header">
         <h1>Gestor d'Incidències</h1>
+
         <nav style="margin-top: 10px; display: flex; gap: 15px;">
           <a href="#/incidencies">Llistat d'incidències</a>
           <a href="#/incidencies/nova">+ Nova incidència</a>
         </nav>
       </header>
+
       <main>
         ${contingutVista}
       </main>
@@ -54,17 +67,31 @@ function render() {
 
   if (ruta.vista === "llistat") {
     pintarLayout(Llistat(getIncidencies()));
+
   } else if (ruta.vista === "nova") {
     pintarLayout(Formulari());
+
   } else if (ruta.vista === "detall") {
     pintarLayout(Detall(getIncidenciaById(ruta.id)));
+
+  } else if (ruta.vista === "editar") {
+    const incidencia = getIncidenciaById(ruta.id);
+
+    if (incidencia) {
+      pintarLayout(Formulari(incidencia, {}, true));
+    } else {
+      pintarLayout(Detall(null));
+    }
+
   } else {
     pintarLayout(`
       <div class="table-responsive" style="padding: 20px;">
         <h2>404 - Ruta no trobada</h2>
         <p>La pàgina que cerques no existeix.</p>
         <br>
-        <a href="#/incidencies" class="btn-save" style="text-decoration: none;">Tornar al llistat</a>
+        <a href="#/incidencies" class="btn-save" style="text-decoration: none;">
+          Tornar al llistat
+        </a>
       </div>
     `);
   }
@@ -72,9 +99,14 @@ function render() {
 
 app.addEventListener("submit", (e) => {
   if (e.target.id !== "form-incidencia") return;
+
   e.preventDefault();
 
+  const id = e.target.dataset.id;
+  const esEdicio = Boolean(id);
+
   const formData = new FormData(e.target);
+
   const dades = {
     titol: formData.get("titol") ?? "",
     descripcio: formData.get("descripcio") ?? "",
@@ -84,14 +116,27 @@ app.addEventListener("submit", (e) => {
   };
 
   const errors = validarDades(dades);
+
   if (Object.keys(errors).length > 0) {
-    pintarLayout(Formulari({ valors: dades, errors, esEdicio: false }));
+    pintarLayout(
+      Formulari({ ...dades, id }, errors, esEdicio)
+    );
     return;
   }
 
-  const nova = crearIncidencia(dades);
-  window.location.hash = `#/incidencies/${nova.id}`;
+  let resultat;
+
+  if (esEdicio) {
+    resultat = actualitzarIncidencia(id, dades);
+  } else {
+    resultat = crearIncidencia(dades);
+  }
+
+  if (resultat) {
+    window.location.hash = `#/incidencies/${resultat.id}`;
+  }
 });
 
 window.addEventListener("hashchange", render);
+
 render();
