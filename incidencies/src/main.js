@@ -1,6 +1,7 @@
 import "./style.css";
-import { getIncidencies } from "./services/incidenciesService.js";
+import { getIncidencies, getIncidenciaById } from "./services/incidenciesService.js";
 import { Llistat } from "./components/llistat.js";
+import { Detall } from "./components/detall.js";
 import { getRutaActual } from "./router.js";
 
 
@@ -16,12 +17,8 @@ function render() {
     const dades = getIncidencies();
     contingutVista = Llistat(dades);
   } else if (ruta.vista === "detall") {
-    contingutVista = `
-      <div class="table-responsive" style="padding: 20px;">
-        <h2>Vista de detall (ID: ${ruta.id})</h2>
-        <a href="#/incidencies">Tornar al llistat</a>
-      </div>
-    `;
+    const incidencia = getIncidenciaById(ruta.id);
+    contingutVista = Detall(incidencia);
   } else {
     contingutVista = `
       <div class="table-responsive" style="padding: 20px;">

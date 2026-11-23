@@ -50,3 +50,7 @@ let incidencies = [
 export function getIncidencies() {
   return [...incidencies];
 }
+
+export function getIncidenciaById(id) {
+  return incidencies.find((inc) => inc.id === id);
+}
