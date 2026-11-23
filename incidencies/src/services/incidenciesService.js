@@ -1,3 +1,4 @@
+
 let incidencies = [
   {
     id: "inc-1",
@@ -46,11 +47,25 @@ let incidencies = [
   },
 ];
 
-
 export function getIncidencies() {
   return [...incidencies];
 }
 
 export function getIncidenciaById(id) {
   return incidencies.find((inc) => inc.id === id);
+}
+
+export function crearIncidencia(dades) {
+  const nova = {
+    id: `inc-${Date.now()}`,
+    titol: dades.titol.trim(),
+    descripcio: dades.descripcio.trim(),
+    estat: dades.estat,
+    prioritat: dades.prioritat,
+    assignat: dades.assignat.trim(),
+    dataCreacio: new Date().toISOString().slice(0, 10),
+  };
+
+  incidencies.push(nova);
+  return nova;
 }
