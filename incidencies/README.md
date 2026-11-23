@@ -23,3 +23,19 @@ Inicialización y renderizado (src/main.js e index.html):
 El archivo index.html contiene exclusivamente el punto de anclaje `<div id="app"></div>` junto con la referencia al script principal.
 
 Desde main.js se conectan el servicio (getIncidencies) y la vista (Llistat), inyectando en #app a través de innerHTML el encabezado global `(<header class="main-header">)` acompañado del listado generado.
+
+----------
+
+Ejercicio 2 (E02) — Navegación y vista de detalle (v0.2.0)
+En esta segunda versión se ha añadido navegación basada en rutas con hash (#) y una pantalla específica para ver la ficha completa de cada incidencia:
+
+Enrutador por hash (src/router.js): Se ha creado getRutaActual(), que analiza window.location.hash para distinguir entre el listado general (#/incidencies) y la vista de una incidencia concreta (#/incidencies/ID, capturando el ID dinámico), además de redirigir por defecto si se entra a la raíz sin hash.
+
+Control de cambios en src/main.js: Al iniciar la app, se añade una sola vez el evento window.addEventListener("hashchange", render) para actualizar la vista al cambiar la URL, conservando siempre visibles la cabecera y el menú común.
+
+Pantalla de detalle (src/components/Detall.js): Nuevo componente que busca los datos de la incidencia con getIncidenciaById(id), muestra toda su información (id, titol, descripcio, estat, prioritat, assignat y dataCreacio) e incluye un enlace para volver al listado.
+
+Manejo de errores en rutas e IDs: Si se escribe una ruta inválida (como #/ruta-falsa) o un ID que no existe (como #/incidencies/inc-999), se muestra un aviso claro al usuario junto con un botón para regresar a #/incidencies.
+
+---------
+
