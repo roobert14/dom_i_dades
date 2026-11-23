@@ -5,7 +5,8 @@ import {
   getIncidencies,
   getIncidenciaById,
   crearIncidencia,
-  actualitzarIncidencia
+  actualitzarIncidencia,
+  eliminarIncidencia
 } from "./services/incidenciesService.js";
 
 import { Llistat } from "./components/llistat.js";
@@ -71,17 +72,17 @@ function render() {
   } else if (ruta.vista === "nova") {
     pintarLayout(Formulari());
 
-  } else if (ruta.vista === "detall") {
-    pintarLayout(Detall(getIncidenciaById(ruta.id)));
-
   } else if (ruta.vista === "editar") {
     const incidencia = getIncidenciaById(ruta.id);
 
-    if (incidencia) {
-      pintarLayout(Formulari(incidencia, {}, true));
-    } else {
+    if (!incidencia) {
       pintarLayout(Detall(null));
+    } else {
+      pintarLayout(Formulari(incidencia, {}, true));
     }
+
+  } else if (ruta.vista === "detall") {
+    pintarLayout(Detall(getIncidenciaById(ruta.id)));
 
   } else {
     pintarLayout(`
@@ -97,13 +98,30 @@ function render() {
   }
 }
 
+// ELIMINAR INCIDÈNCIES
+app.addEventListener("click", (e) => {
+  const botoEliminar = e.target.closest('[data-action="eliminar"]');
+
+  if (!botoEliminar) return;
+
+  const id = botoEliminar.dataset.id;
+
+  if (!id) return;
+
+  if (window.confirm(`Segur que vols eliminar la incidència ${id}?`)) {
+    eliminarIncidencia(id);
+    render();
+  }
+});
+
+// CREAR I EDITAR INCIDÈNCIES
 app.addEventListener("submit", (e) => {
   if (e.target.id !== "form-incidencia") return;
 
   e.preventDefault();
 
-  const id = e.target.dataset.id;
-  const esEdicio = Boolean(id);
+  const idEdicio = e.target.dataset.id;
+  const esEdicio = Boolean(idEdicio);
 
   const formData = new FormData(e.target);
 
@@ -119,21 +137,17 @@ app.addEventListener("submit", (e) => {
 
   if (Object.keys(errors).length > 0) {
     pintarLayout(
-      Formulari({ ...dades, id }, errors, esEdicio)
+      Formulari({ ...dades, id: idEdicio }, errors, esEdicio)
     );
     return;
   }
 
-  let resultat;
-
   if (esEdicio) {
-    resultat = actualitzarIncidencia(id, dades);
+    actualitzarIncidencia(idEdicio, dades);
+    window.location.hash = `#/incidencies/${idEdicio}`;
   } else {
-    resultat = crearIncidencia(dades);
-  }
-
-  if (resultat) {
-    window.location.hash = `#/incidencies/${resultat.id}`;
+    const nova = crearIncidencia(dades);
+    window.location.hash = `#/incidencies/${nova.id}`;
   }
 });
 
