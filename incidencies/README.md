@@ -39,3 +39,21 @@ Manejo de errores en rutas e IDs: Si se escribe una ruta inválida (como #/ruta-
 
 ---------
 
+Exercici 3 (E03) — Formulari per crear i editar incidències (v0.3.0)
+En aquest tercer exercici s'ha afegit la possibilitat de crear incidències noves i modificar les que ja existeixen, utilitzant el mateix formulari per a totes dues funcions.
+
+- Rutes de creació i edició (src/router.js): S'han incorporat dues rutes noves: #/incidencies/nova, per crear una incidència, i #/incidencies/ID/editar, per modificar-ne una d'existent. La ruta de creació es comprova abans de les rutes que utilitzen identificadors.
+
+- Formulari reutilitzable (src/components/formulari.js): S'ha creat un únic component que serveix tant per donar d'alta incidències com per editar-les. També s'han relacionat les etiquetes amb els camps corresponents per facilitar l'ús del formulari amb el teclat.
+
+- Validació de dades (src/main.js): Abans de desar una incidència, es comprova que el títol, la descripció i la persona assignada tinguin contingut vàlid. També es verifica que l'estat i la prioritat siguin correctes. Si algun camp conté errors, es mostra un missatge d'avís a sota i es mantenen les dades que ja havia escrit l'usuari.
+
+- Creació i modificació (src/services/incidenciesService.js):
+
+Quan es crea una incidència, se li assigna un identificador nou i la data del dia en què s'ha creat.
+
+Quan es modifica una incidència, es mantenen el seu identificador i la data de creació originals, i només s'actualitzen les dades modificades.
+
+- Cancel·lació: L'usuari pot sortir del formulari sense desar els canvis i tornar a la pantalla corresponent.
+
+------
