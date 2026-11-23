@@ -24,6 +24,7 @@ export function Detall(incidencia) {
         <li><strong>Data de creació:</strong> ${incidencia.dataCreacio}</li>
       </ul>
       <a href="#/incidencies" class="btn-save" style="text-decoration: none;">Tornar al llistat</a>
+      <a href="#/incidencies/${incidencia.id}/editar" class="btn-save" style="text-decoration: none; margin-left: 10px;">Editar</a>
     </div>
   `;
 }
