@@ -71,4 +71,20 @@ En aquest quart exercici s'han afegit dues noves funcions al gestor d'incidènci
 
 En resum: ara l'aplicació permet eliminar incidències de manera segura i consultar-les més fàcilment mitjançant filtres segons el seu estat.
 
+Exercici 5 (E05) — Versió definitiva (v1.0.0)
+1. Emmagatzematge de dades (incidenciesService.js):
+
+Les incidències es guarden automàticament al navegador mitjançant localStorage. Cada vegada que es crea, modifica o elimina una incidència, els canvis queden guardats. Les dades de prova només s'afegeixen la primera vegada, si encara no hi ha cap informació guardada.
+
+2. Control d'errors (incidenciesService.js i main.js):
+
+S'han incorporat mecanismes per detectar possibles problemes en guardar o recuperar les dades. Si es produeix algun error, es mostra un missatge d'avís a la pantalla i s'evita modificar les dades que ja estaven emmagatzemades.
+
+3. Comprovació final:
+
+S'ha comprovat el funcionament del projecte executant les ordres npm run build i npm run preview per verificar que es pot compilar i visualitzar correctament.
+
+Versió final del projecte: v1.0.0.
+
+
 
